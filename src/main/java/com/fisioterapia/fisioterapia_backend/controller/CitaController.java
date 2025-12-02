@@ -2,6 +2,7 @@ package com.fisioterapia.fisioterapia_backend.controller;
 
 import com.fisioterapia.fisioterapia_backend.dto.CitaRequest;
 import com.fisioterapia.fisioterapia_backend.dto.CitaResponse;
+import com.fisioterapia.fisioterapia_backend.dto.CitaUpdateRequest;
 import com.fisioterapia.fisioterapia_backend.service.CitaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -82,7 +83,7 @@ public class CitaController {
     @PutMapping("/{citaId}")
     public ResponseEntity<CitaResponse> actualizarCita(
             @PathVariable Long citaId,
-            @Valid @RequestBody CitaRequest request,
+            @Valid @RequestBody CitaUpdateRequest request,
             Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         Long userId = userRepository.findByUsername(userDetails.getUsername())

@@ -2,6 +2,7 @@ package com.fisioterapia.fisioterapia_backend.service;
 
 import com.fisioterapia.fisioterapia_backend.dto.CitaRequest;
 import com.fisioterapia.fisioterapia_backend.dto.CitaResponse;
+import com.fisioterapia.fisioterapia_backend.dto.CitaUpdateRequest;
 import com.fisioterapia.fisioterapia_backend.entity.Cita;
 import com.fisioterapia.fisioterapia_backend.entity.Fisioterapeuta;
 import com.fisioterapia.fisioterapia_backend.entity.Paciente;
@@ -117,7 +118,7 @@ public class CitaService {
     }
 
     @Transactional
-    public CitaResponse actualizarCita(Long citaId, CitaRequest request, Long pacienteUserId) {
+    public CitaResponse actualizarCita(Long citaId, CitaUpdateRequest request, Long pacienteUserId) {
         Cita cita = citaRepository.findById(citaId)
                 .orElseThrow(() -> new RuntimeException("Cita no encontrada"));
 
