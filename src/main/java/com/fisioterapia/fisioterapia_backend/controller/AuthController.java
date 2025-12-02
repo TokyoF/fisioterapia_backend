@@ -33,6 +33,32 @@ public class AuthController {
 
     @PostMapping("/register/cliente")
     public ResponseEntity<AuthResponse> registerCliente(@Valid @RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(authService.register(request, "ROLE_CLIENTE"));
+        return ResponseEntity.ok(authService.register(request, "ROLE_PACIENTE"));
+    }
+
+    @PostMapping("/register/paciente")
+    public ResponseEntity<AuthResponse> registerPaciente(@Valid @RequestBody RegisterRequest request) {
+        return ResponseEntity.ok(authService.register(request, "ROLE_PACIENTE"));
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestParam String email) {
+        authService.sendPasswordResetEmail(email);
+        return ResponseEntity.ok("Se ha enviado un código de verificación a tu correo electrónico");
+    }
+
+    @PostMapping("/verify-reset-code")
+    public ResponseEntity<String> verifyResetCode(@RequestParam String email, @RequestParam String code) {
+        authService.verifyResetCode(email, code);
+        return ResponseEntity.ok("Código verificado correctamente");
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(
+            @RequestParam String email, 
+            @RequestParam String code, 
+            @RequestParam String newPassword) {
+        authService.resetPassword(email, code, newPassword);
+        return ResponseEntity.ok("Contraseña restablecida exitosamente");
     }
 }
