@@ -17,9 +17,32 @@ public class RegistroClinicoResponse {
     private String pacienteNombre;
     private String pacienteCodigo;
     private String fisioterapeutaNombre;
+    private LocalDate fecha;  // Alias para fechaRegistro
     private LocalDate fechaRegistro;
     private String diagnostico;
     private String tratamiento;
     private String observaciones;
     private LocalDate proximaSesion;
+    private FisioterapeutaInfo fisioterapeuta;
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class FisioterapeutaInfo {
+        private Long id;
+        private String especialidad;
+        private UserInfo user;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UserInfo {
+        private Long id;
+        private String firstName;
+        private String lastName;
+        private String email;
+    }
 }

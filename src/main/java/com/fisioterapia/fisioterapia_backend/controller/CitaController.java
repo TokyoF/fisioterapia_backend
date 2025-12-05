@@ -67,6 +67,12 @@ public class CitaController {
         return ResponseEntity.ok(citas);
     }
 
+    @GetMapping("/fisioterapeuta/{fisioterapeutaId}")
+    public ResponseEntity<List<CitaResponse>> obtenerCitasPorFisioterapeutaId(@PathVariable Long fisioterapeutaId) {
+        List<CitaResponse> citas = citaService.obtenerCitasPorFisioterapeutaId(fisioterapeutaId);
+        return ResponseEntity.ok(citas);
+    }
+
     @GetMapping("/paciente/estado/{estado}")
     public ResponseEntity<List<CitaResponse>> obtenerCitasPorEstado(
             @PathVariable String estado,
@@ -94,8 +100,19 @@ public class CitaController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{citaId}")
+    @PutMapping("/{citaId}/cancelar")
     public ResponseEntity<Void> cancelarCita(@PathVariable Long citaId, Authentication authentication) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        Long userId = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"))
+                .getId();
+
+        citaService.cancelarCita(citaId, userId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{citaId}")
+    public ResponseEntity<Void> eliminarCita(@PathVariable Long citaId, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         Long userId = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"))

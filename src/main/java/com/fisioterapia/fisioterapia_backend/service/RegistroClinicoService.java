@@ -77,17 +77,31 @@ public class RegistroClinicoService {
     }
 
     private RegistroClinicoResponse convertirAResponse(RegistroClinico registro) {
+        // Crear objeto anidado de fisioterapeuta
+        RegistroClinicoResponse.FisioterapeutaInfo fisioterapeutaInfo = RegistroClinicoResponse.FisioterapeutaInfo.builder()
+                .id(registro.getFisioterapeuta().getId())
+                .especialidad(registro.getFisioterapeuta().getEspecialidad())
+                .user(RegistroClinicoResponse.UserInfo.builder()
+                        .id(registro.getFisioterapeuta().getUser().getId())
+                        .firstName(registro.getFisioterapeuta().getUser().getFirstName())
+                        .lastName(registro.getFisioterapeuta().getUser().getLastName())
+                        .email(registro.getFisioterapeuta().getUser().getEmail())
+                        .build())
+                .build();
+
         return RegistroClinicoResponse.builder()
                 .id(registro.getId())
                 .codigo(registro.getCodigo())
                 .pacienteNombre(registro.getPaciente().getUser().getFirstName() + " " + registro.getPaciente().getUser().getLastName())
                 .pacienteCodigo(registro.getPaciente().getCodigo())
                 .fisioterapeutaNombre("Dr. " + registro.getFisioterapeuta().getUser().getFirstName() + " " + registro.getFisioterapeuta().getUser().getLastName())
+                .fecha(registro.getFechaRegistro())  // Alias para compatibilidad con frontend
                 .fechaRegistro(registro.getFechaRegistro())
                 .diagnostico(registro.getDiagnostico())
                 .tratamiento(registro.getTratamiento())
                 .observaciones(registro.getObservaciones())
                 .proximaSesion(registro.getProximaSesion())
+                .fisioterapeuta(fisioterapeutaInfo)
                 .build();
     }
 }

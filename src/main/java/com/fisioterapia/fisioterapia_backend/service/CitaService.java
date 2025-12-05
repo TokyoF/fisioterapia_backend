@@ -105,6 +105,18 @@ public class CitaService {
     }
 
     @Transactional(readOnly = true)
+    public List<CitaResponse> obtenerCitasPorFisioterapeutaId(Long fisioterapeutaId) {
+        // Verificar que el fisioterapeuta existe
+        Fisioterapeuta fisioterapeuta = fisioterapeutaRepository.findById(fisioterapeutaId)
+                .orElseThrow(() -> new RuntimeException("Fisioterapeuta no encontrado"));
+
+        return citaRepository.findByFisioterapeutaId(fisioterapeutaId)
+                .stream()
+                .map(this::convertirAResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
     public List<CitaResponse> obtenerCitasPorEstado(Long pacienteUserId, String estado) {
         Paciente paciente = pacienteRepository.findByUserId(pacienteUserId)
                 .orElseThrow(() -> new RuntimeException("Paciente no encontrado"));

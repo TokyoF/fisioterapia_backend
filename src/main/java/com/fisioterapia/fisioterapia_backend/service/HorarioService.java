@@ -47,6 +47,43 @@ public class HorarioService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public List<HorarioResponse> obtenerHorariosPorFisioterapeutaId(Long fisioterapeutaId) {
+        // Verificar que el fisioterapeuta existe
+        Fisioterapeuta fisioterapeuta = fisioterapeutaRepository.findById(fisioterapeutaId)
+                .orElseThrow(() -> new RuntimeException("Fisioterapeuta no encontrado"));
+
+        return horarioRepository.findByFisioterapeutaId(fisioterapeutaId)
+                .stream()
+                .map(this::convertirAResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public HorarioResponse actualizarHorario(Long horarioId, HorarioRequest request, Long fisioterapeutaUserId) {
+        Horario horario = horarioRepository.findById(horarioId)
+                .orElseThrow(() -> new RuntimeException("Horario no encontrado"));
+
+        // Verificar que el horario pertenece al fisioterapeuta
+        Fisioterapeuta fisioterapeuta = fisioterapeutaRepository.findByUserId(fisioterapeutaUserId)
+                .orElseThrow(() -> new RuntimeException("Fisioterapeuta no encontrado"));
+
+        if (!horario.getFisioterapeuta().getId().equals(fisioterapeuta.getId())) {
+            throw new RuntimeException("No tienes permiso para modificar este horario");
+        }
+
+        horario.setDiaSemana(request.getDiaSemana());
+        horario.setHoraInicio(request.getHoraInicio());
+        horario.setHoraFin(request.getHoraFin());
+        if (request.getDisponible() != null) {
+            horario.setDisponible(request.getDisponible());
+        }
+        
+        horario = horarioRepository.save(horario);
+
+        return convertirAResponse(horario);
+    }
+
     @Transactional
     public HorarioResponse actualizarDisponibilidad(Long horarioId, Boolean disponible, Long fisioterapeutaUserId) {
         Horario horario = horarioRepository.findById(horarioId)

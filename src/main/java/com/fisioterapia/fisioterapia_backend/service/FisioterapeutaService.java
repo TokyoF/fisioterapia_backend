@@ -31,6 +31,13 @@ public class FisioterapeutaService {
         return convertirAResponse(fisioterapeuta);
     }
 
+    @Transactional(readOnly = true)
+    public FisioterapeutaResponse obtenerPorId(Long id) {
+        Fisioterapeuta fisioterapeuta = fisioterapeutaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Fisioterapeuta no encontrado"));
+        return convertirAResponse(fisioterapeuta);
+    }
+
     private FisioterapeutaResponse convertirAResponse(Fisioterapeuta fisioterapeuta) {
         return FisioterapeutaResponse.builder()
                 .id(fisioterapeuta.getId())

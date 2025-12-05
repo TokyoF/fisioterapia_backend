@@ -45,6 +45,26 @@ public class HorarioController {
         return ResponseEntity.ok(horarios);
     }
 
+    @GetMapping("/fisioterapeuta/{fisioterapeutaId}")
+    public ResponseEntity<List<HorarioResponse>> obtenerHorariosPorFisioterapeutaId(@PathVariable Long fisioterapeutaId) {
+        List<HorarioResponse> horarios = horarioService.obtenerHorariosPorFisioterapeutaId(fisioterapeutaId);
+        return ResponseEntity.ok(horarios);
+    }
+
+    @PutMapping("/{horarioId}")
+    public ResponseEntity<HorarioResponse> actualizarHorario(
+            @PathVariable Long horarioId,
+            @Valid @RequestBody HorarioRequest request,
+            Authentication authentication) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        Long userId = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"))
+                .getId();
+
+        HorarioResponse response = horarioService.actualizarHorario(horarioId, request, userId);
+        return ResponseEntity.ok(response);
+    }
+
     @PatchMapping("/{horarioId}/disponibilidad")
     public ResponseEntity<HorarioResponse> actualizarDisponibilidad(
             @PathVariable Long horarioId,
